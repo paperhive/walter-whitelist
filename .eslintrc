@@ -1,0 +1,8 @@
+{
+  "extends": "airbnb/base",
+  "rules": {
+    "no-cond-assign": [2, "except-parens"],
+    "object-curly-spacing": 0,
+    "strict": [2, "global"]
+  }
+}

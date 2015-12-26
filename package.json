@@ -1,0 +1,53 @@
+{
+  "name": "walter-whitelist",
+  "version": "1.0.0",
+  "description": "Whitelist javascript objects",
+  "main": "src/index.js",
+  "scripts": {
+    "coveralls": "mocha --require blanket -R mocha-lcov-reporter | coveralls",
+    "lint": "eslint src test",
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paperhive/walter-whitelist.git"
+  },
+  "keywords": [
+    "whitelist",
+    "sanitize",
+    "clean",
+    "strip",
+    "tidy",
+    "pick",
+    "authorize",
+    "redact",
+    "objects",
+    "security",
+    "permission",
+    "authorization"
+  ],
+  "author": "André Gaul <andre@gaul.io>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/paperhive/walter-whitelist/issues"
+  },
+  "homepage": "https://github.com/paperhive/walter-whitelist#readme",
+  "devDependencies": {
+    "blanket": "^1.2.1",
+    "coveralls": "^2.11.6",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^2.1.1",
+    "mocha": "^2.3.4",
+    "mocha-lcov-reporter": "^1.0.0",
+    "should": "^8.0.2"
+  },
+  "config": {
+    "blanket": {
+      "data-cover-only": "src",
+      "data-cover-never": "node_modules"
+    }
+  },
+  "dependencies": {
+    "lodash": "^3.10.1"
+  }
+}
