@@ -4,47 +4,53 @@ const whitelist = require('..');
 
 describe('whitelist()', () => {
   it('should return a whitelisted object with booleans', () => {
-    const obj = {name: 'Darth', lightsaber: 'red'};
-    const res = whitelist(obj, {name: true, lightsaber: true});
-    res.should.eql(obj);
+    const src = {name: 'Darth', age: 42};
+    whitelist(src, {name: true, age: true}).should.eql(src);
   });
 
   it('should return a whitelisted object with nested objects', () => {
-    const obj = {name: 'Darth', lightsaber: {color: 'red'}};
-    const res = whitelist(obj, {name: true, lightsaber: {color: true}});
-    res.should.eql(obj);
+    whitelist(
+      {name: 'Darth', lightsaber: {color: 'red'}},
+      {name: true, lightsaber: {color: true}}
+    ).should.eql({name: 'Darth', lightsaber: {color: 'red'}});
   });
 
   it('should return a whitelisted object with functions', () => {
-    const obj = {name: 'Darth', lightsaber: 'red'};
-    const res = whitelist(obj, {name: true, lightsaber: () => 'secret'});
-    res.should.eql({name: 'Darth', lightsaber: 'secret'});
+    whitelist(
+      {name: 'Darth', age: 42},
+      {name: true, age: (v) => v < 50 ? v : undefined}
+    ).should.eql({name: 'Darth', age: 42});
+    whitelist(
+      {name: 'Darth', age: 66},
+      {name: true, age: (v) => v < 50 ? v : undefined}
+    ).should.eql({name: 'Darth', age: undefined});
   });
 
   it('should return undefined for keys that are missing in src', () => {
-    const obj = {name: 'Darth'};
-    const res = whitelist(obj, {name: true, lightsaber: {color: true}});
-    res.should.eql({name: 'Darth', lightsaber: {color: undefined}});
+    whitelist(
+      {name: 'Darth'},
+      {name: true, lightsaber: {color: true}}
+    ).should.eql({name: 'Darth', lightsaber: {color: undefined}});
   });
 
   it('should remove keys with undefined values if omitUndefined === true', () => {
-    const obj = {name: 'Darth'};
-    const res = whitelist(obj, {name: true, lightsaber: {color: true}},
+    const src = {name: 'Darth'};
+    const res = whitelist(src, {name: true, lightsaber: {color: true}},
         {omitUndefined: true});
     res.should.eql({name: 'Darth', lightsaber: {}});
   });
 
   it('should throw if a key is not whitelisted', () => {
     should(() => {
-      whitelist({name: 'Darth', passwordHash: 'acab'}, {name: true});
+      whitelist({id: 23, name: 'Darth'}, {name: true});
     }).throw();
   });
 
-  it('should ignore non-whitelisted keys with ignoreNonWhitelisted === true', () => {
+  it('should omit disallowed keys with omitDisallowed === true', () => {
     whitelist(
       {name: 'Darth', passwordHash: 'acab'},
       {name: true},
-      {ignoreNonWhitelisted: true}
+      {omitDisallowed: true}
     ).should.eql({name: 'Darth'});
   });
 
