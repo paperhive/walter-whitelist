@@ -8,7 +8,6 @@ This lightweight module whitelists javascript objects recursively. This is parti
 # Examples
 
 ## Process user-supplied objects
-
 Before storing user-supplied data in a database, you usually want to check if the object contains fields that the user is allowed to store.
 
 ```javascript
@@ -40,7 +39,6 @@ whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // returns {name: 'D
 ```
 
 ## Pick allowed fields
-
 Before sending data from a database to a client, you want to pick only fields that the client is allowed to see. This can be achieved by using the option `omitDisallowed: true`.
 
 ```javascript
@@ -50,15 +48,14 @@ whitelist({id: 23, name: 'Darth'}, allowed, {omitDisallowed: true}); // returns 
 // omitDisallowed can be combined with omitUndefined:
 whitelist({id: 23, name: 'Darth'}, allowed,
   {omitDisallowed: true, omitUndefined: true}); // returns {name: 'Darth'}
+```
 
 # Installation
-
 ```
 npm install walter-whitelist
 ```
 
 # Documentation
-
 ```javascript
 const whitelist = require('walter-whitelist');
 ```
