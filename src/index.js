@@ -19,9 +19,12 @@ function setDifference(a, b) {
 function whitelist(obj, whitelistObj, _options, _path) {
   // init default options
   const options = _.defaults(_options || {}, {
-    // ignore keys in obj that are not whitelisted in whitelistObj;
-    // otherwise a WhitelistError is thrown
+    // ignore keys in obj that are not whitelisted in whitelistObj
+    // (otherwise a WhitelistError is thrown)
     ignoreNonWhitelisted: false,
+    // remove keys with undefined values
+    // (values of keys which are in whitelistObj but not in obj are set to
+    // undefined by default)
     omitUndefined: false,
   });
 
