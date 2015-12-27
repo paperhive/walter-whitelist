@@ -16,14 +16,14 @@ function setDifference(a, b) {
 
 /* check if obj is valid and return object with value 'undefined' for
  * missing keys in obj */
-function whitelist(obj, whitelistObj, _options, _path) {
+function whitelist(src, allowed, _options, _path) {
   // init default options
   const options = _.defaults(_options || {}, {
-    // ignore keys in obj that are not whitelisted in whitelistObj
+    // ignore keys in `src` that are not whitelisted in the `allowed` obj
     // (otherwise a WhitelistError is thrown)
-    ignoreNonWhitelisted: false,
+    omitDisallowed: false,
     // remove keys with undefined values
-    // (values of keys which are in whitelistObj but not in obj are set to
+    // (values of keys which are in `allowed` obj but not in `src` are set to
     // undefined by default)
     omitUndefined: false,
   });
@@ -32,36 +32,36 @@ function whitelist(obj, whitelistObj, _options, _path) {
   const path = _path || '';
 
   // check input
-  if (!_.isPlainObject(obj) || !_.isPlainObject(whitelistObj)) {
+  if (!_.isPlainObject(src) || !_.isPlainObject(allowed)) {
     throw new WhitelistError('expected an object' +
         (path ? ' at path ' + path : ''));
   }
 
   // check for extra keys
-  if (!options.ignoreNonWhitelisted) {
-    const givenKeys = new Set(Object.keys(obj));
-    const whitelistedKeys = new Set(Object.keys(whitelistObj));
-    const nonWhitelistedKeys = setDifference(givenKeys, whitelistedKeys);
-    if (nonWhitelistedKeys.size) {
+  if (!options.omitDisallowed) {
+    const srcKeys = new Set(Object.keys(src));
+    const allowedKeys = new Set(Object.keys(allowed));
+    const disallowedKeys = setDifference(srcKeys, allowedKeys);
+    if (disallowedKeys.size) {
       throw new WhitelistError('the following fields are not allowed: ' +
-          Array.from(nonWhitelistedKeys).map((key) => path + key).join(', '),
-          nonWhitelistedKeys);
+          Array.from(disallowedKeys).map((key) => path + key).join(', '),
+          disallowedKeys);
     }
   }
 
   // construct new object
-  const res = _.mapValues(whitelistObj, (val, key) => {
+  const res = _.mapValues(allowed, (val, key) => {
     const currentPath = path + key;
     // true: use full object
-    if (val === true) return obj[key];
+    if (val === true) return src[key];
 
     // object: get whitelisted object recursively
     if (_.isPlainObject(val)) {
-      return whitelist(obj[key] || {}, val, options, currentPath + '.');
+      return whitelist(src[key] || {}, val, options, currentPath + '.');
     }
 
     // function: use result of function call
-    if (_.isFunction(val)) return val(obj[key], currentPath);
+    if (_.isFunction(val)) return val(src[key], currentPath);
   });
 
   // filter undefined values (if required by options)
