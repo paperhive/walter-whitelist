@@ -1,6 +1,6 @@
 {
   "name": "walter-whitelist",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Whitelist javascript objects",
   "main": "src/index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "pick",
     "authorize",
     "redact",
+    "screen",
     "objects",
     "security",
     "permission",
