@@ -5,6 +5,8 @@ This lightweight module whitelists javascript objects recursively. This is parti
  * you have to check that a user-supplied object only contains keys that the user is allowed to supply, e.g., when handling a POST/PUT request
  * you have to pick fields from an object that the user is allowed to see, e.g., before sending a response to a client
 
+![Walter Whitelist](https://paperhive.github.io/walter-whitelist/logo.svg)
+
 # Examples
 
 ## Process user-supplied objects
