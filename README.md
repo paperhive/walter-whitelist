@@ -8,6 +8,8 @@ This lightweight module whitelists javascript objects recursively. This is parti
 # Examples
 
 ## Process user-supplied objects
+Before storing user-supplied data in a database, you usually want to check if the object contains fields that the user is allowed to store.
+
 ```javascript
 let allowed = {name: true, age: true};
 whitelist({name: 'Darth', age: 42}, allowed); // returns {name: 'Darth', age: 42}
@@ -37,7 +39,15 @@ whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // returns {name: 'D
 ```
 
 ## Pick allowed fields
-TODO
+Before sending data from a database to a client, you want to pick only fields that the client is allowed to see. This can be achieved by using the option `omitDisallowed: true`.
+
+```javascript
+let allowed = {name: true, age: true};
+whitelist({id: 23, name: 'Darth', age: 42}, allowed, {omitDisallowed: true}); // returns {name: 'Darth', age: 42}
+whitelist({id: 23, name: 'Darth'}, allowed, {omitDisallowed: true}); // returns {name: 'Darth', age: undefined}
+// omitDisallowed can be combined with omitUndefined:
+whitelist({id: 23, name: 'Darth'}, allowed,
+  {omitDisallowed: true, omitUndefined: true}); // returns {name: 'Darth'}
 
 # Installation
 ```
@@ -49,5 +59,12 @@ npm install walter-whitelist
 const whitelist = require('walter-whitelist');
 ```
 
-## dest = whitelist(src, allowed, options)
-TODO
+## `dest = whitelist(src, allowed, options)`
+ * `src`: source object
+ * `allowed`: an object that specifies which fields are allowed. The values can be
+    * a boolean: if the value is `true`, the field is allowed and *copied* to the result object
+    * an object: whitelist is called recursively (for nested objects)
+    * a function `fn(value, path)`: the result of the function is placed in the result object
+ * `options`: an object with the following optional keys:
+    * `omitUndefined`: if set to `true`, it omits fields in the result whose values are undefined
+    * `omitDisallowed`: if set to `true`, it omits fields from src that are not present in `allowed`
