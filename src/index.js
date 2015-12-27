@@ -65,7 +65,7 @@ function whitelist(obj, whitelistObj, _options, _path) {
   });
 
   // filter undefined values (if required by options)
-  return options.omitUndefined ? _.filter(res, (v) => v !== undefined) : res;
+  return options.omitUndefined ? _.pick(res, (v) => v !== undefined) : res;
 }
 
 module.exports = whitelist.default = whitelist.whitelist = whitelist;
