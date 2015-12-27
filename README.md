@@ -68,3 +68,5 @@ const whitelist = require('walter-whitelist');
  * `options`: an object with the following optional keys:
     * `omitUndefined`: if set to `true`, it omits fields in the result whose values are undefined
     * `omitDisallowed`: if set to `true`, it omits fields from src that are not present in `allowed`
+
+The function returns a new object with the whitelisted fields and throws a `whitelist.WhitelistError` if a field in `src` is not allowed (unless `omitDisallow` is `true`).
