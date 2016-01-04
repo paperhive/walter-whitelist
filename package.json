@@ -41,12 +41,6 @@
     "mocha": "^2.3.4",
     "should": "^8.0.2"
   },
-  "config": {
-    "blanket": {
-      "data-cover-only": "src",
-      "data-cover-never": "node_modules"
-    }
-  },
   "dependencies": {
     "lodash": "^3.10.1"
   }
