@@ -62,7 +62,7 @@ npm install walter-whitelist
 const whitelist = require('walter-whitelist');
 ```
 
-## `dest = whitelist(src, allowed, options)`
+## `whitelist(src, allowed, options)`
  * `src`: source object
  * `allowed`: an object that specifies which fields are allowed. The values can be
     * a boolean: if the value is `true`, the field is allowed and *copied* to the result object
