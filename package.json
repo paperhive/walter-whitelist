@@ -1,6 +1,6 @@
 {
   "name": "walter-whitelist",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Whitelist javascript objects",
   "main": "src/index.js",
   "scripts": {
@@ -42,6 +42,6 @@
     "should": "^8.0.2"
   },
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^4.0.0"
   }
 }
