@@ -33,8 +33,9 @@ function whitelist(src, allowed, _options, _path) {
 
   // check input
   if (!_.isPlainObject(src) || !_.isPlainObject(allowed)) {
-    throw new WhitelistError('expected an object' +
-        (path ? ' at path ' + path : ''));
+    throw new WhitelistError(
+      `expected an object${(path ? ` at path ${path}` : '')}`
+    );
   }
 
   // check for extra keys
@@ -43,9 +44,12 @@ function whitelist(src, allowed, _options, _path) {
     const allowedKeys = new Set(Object.keys(allowed));
     const disallowedKeys = setDifference(srcKeys, allowedKeys);
     if (disallowedKeys.size) {
-      throw new WhitelistError('the following fields are not allowed: ' +
-          Array.from(disallowedKeys).map((key) => path + key).join(', '),
-          disallowedKeys);
+      throw new WhitelistError(
+        `the following fields are not allowed: ${
+          Array.from(disallowedKeys).map((key) => path + key).join(', ')
+        }`,
+        disallowedKeys
+      );
     }
   }
 
@@ -57,7 +61,7 @@ function whitelist(src, allowed, _options, _path) {
 
     // object: get whitelisted object recursively
     if (_.isPlainObject(val)) {
-      return whitelist(src[key] || {}, val, options, currentPath + '.');
+      return whitelist(src[key] || {}, val, options, `${currentPath}.`);
     }
 
     // function: use result of function call
