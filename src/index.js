@@ -45,9 +45,9 @@ function whitelist(src, allowed, _options, _path) {
     const disallowedKeys = setDifference(srcKeys, allowedKeys);
     if (disallowedKeys.size) {
       throw new WhitelistError(
-        `the following fields are not allowed: ${
+        `The following fields are not allowed: ${
           Array.from(disallowedKeys).map((key) => path + key).join(', ')
-        }`,
+        }. Allowed fields: ${Array.from(allowedKeys).join(', ')}.`,
         disallowedKeys
       );
     }
