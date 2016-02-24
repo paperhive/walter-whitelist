@@ -1,6 +1,6 @@
 {
   "name": "walter-whitelist",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Whitelist javascript objects",
   "main": "src/index.js",
   "scripts": {
@@ -35,8 +35,8 @@
   "homepage": "https://github.com/paperhive/walter-whitelist#readme",
   "devDependencies": {
     "coveralls": "^2.11.6",
-    "eslint": "^1.10.3",
-    "eslint-config-airbnb": "^5.0.0",
+    "eslint": "^2.0.0",
+    "eslint-config-airbnb": "^6.0.2",
     "isparta": "^4.0.0",
     "mocha": "^2.3.4",
     "should": "^8.0.2"
