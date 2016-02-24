@@ -66,6 +66,9 @@ function whitelist(src, allowed, _options, _path) {
 
     // function: use result of function call
     if (_.isFunction(val)) return val(src[key], currentPath);
+
+    // unhandled value
+    throw new Error('unknown value in allowed object: ', val);
   });
 
   // filter undefined values (if required by options)

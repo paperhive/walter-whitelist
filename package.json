@@ -35,7 +35,7 @@
   "homepage": "https://github.com/paperhive/walter-whitelist#readme",
   "devDependencies": {
     "coveralls": "^2.11.6",
-    "eslint": "^1.10.3",
+    "eslint": "^2.0.0",
     "eslint-config-airbnb": "^6.0.2",
     "isparta": "^4.0.0",
     "mocha": "^2.3.4",
