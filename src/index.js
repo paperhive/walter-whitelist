@@ -59,6 +59,9 @@ function whitelist(src, allowed, _options, _path) {
     // true: use full object
     if (val === true) return src[key];
 
+    // false: undefined
+    if (val === false) return undefined;
+
     // object: get whitelisted object recursively
     if (_.isPlainObject(val)) {
       return whitelist(src[key] || {}, val, options, `${currentPath}.`);
