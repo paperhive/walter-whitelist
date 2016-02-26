@@ -56,11 +56,12 @@ function whitelist(src, allowed, _options, _path) {
   // construct new object
   const res = _.mapValues(allowed, (val, key) => {
     const currentPath = path + key;
+
+    // falsy: undefined
+    if (!val) return undefined;
+
     // true: use full object
     if (val === true) return src[key];
-
-    // false: undefined
-    if (val === false) return undefined;
 
     // object: get whitelisted object recursively
     if (_.isPlainObject(val)) {
@@ -71,7 +72,7 @@ function whitelist(src, allowed, _options, _path) {
     if (_.isFunction(val)) return val(src[key], currentPath);
 
     // unhandled value
-    throw new Error('unknown value in allowed object: ', val);
+    throw new Error(`unknown value in allowed object for key ${key}: ${val}`);
   });
 
   // filter undefined values (if required by options)
