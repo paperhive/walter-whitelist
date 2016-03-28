@@ -18,11 +18,11 @@ describe('whitelist()', () => {
   it('should return a whitelisted object with functions', () => {
     whitelist(
       {name: 'Darth', age: 42},
-      {name: true, age: (v) => v < 50 ? v : undefined}
+      {name: true, age: (v) => (v < 50 ? v : undefined)}
     ).should.eql({name: 'Darth', age: 42});
     whitelist(
       {name: 'Darth', age: 66},
-      {name: true, age: (v) => v < 50 ? v : undefined}
+      {name: true, age: (v) => (v < 50 ? v : undefined)}
     ).should.eql({name: 'Darth', age: undefined});
   });
 
