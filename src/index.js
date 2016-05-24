@@ -32,7 +32,7 @@ function whitelist(src, allowed, _options, _path) {
   const path = _path || '';
 
   // check input
-  if (!_.isPlainObject(src) || !_.isPlainObject(allowed)) {
+  if (!_.isObject(src) || !_.isObject(allowed)) {
     throw new WhitelistError(
       `expected an object${(path ? ` at path ${path}` : '')}`
     );
@@ -63,13 +63,13 @@ function whitelist(src, allowed, _options, _path) {
     // true: use full object
     if (val === true) return src[key];
 
-    // object: get whitelisted object recursively
-    if (_.isPlainObject(val)) {
-      return whitelist(src[key] || {}, val, options, `${currentPath}.`);
-    }
-
     // function: use result of function call
     if (_.isFunction(val)) return val(src[key], currentPath);
+
+    // object: get whitelisted object recursively
+    if (_.isObject(val)) {
+      return whitelist(src[key] || {}, val, options, `${currentPath}.`);
+    }
 
     // unhandled value
     throw new Error(`unknown value in allowed object for key ${key}: ${val}`);
