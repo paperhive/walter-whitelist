@@ -46,7 +46,7 @@ function whitelist(src, allowed, _options, _path) {
     if (disallowedKeys.size) {
       throw new WhitelistError(
         `The following fields are not allowed: ${
-          Array.from(disallowedKeys).map((key) => path + key).join(', ')
+          Array.from(disallowedKeys).map(key => path + key).join(', ')
         }. Allowed fields: ${Array.from(allowedKeys).join(', ')}.`,
         disallowedKeys
       );
@@ -76,7 +76,7 @@ function whitelist(src, allowed, _options, _path) {
   });
 
   // filter undefined values (if required by options)
-  return options.omitUndefined ? _.pickBy(res, (v) => v !== undefined) : res;
+  return options.omitUndefined ? _.pickBy(res, v => v !== undefined) : res;
 }
 
 module.exports = whitelist.default = whitelist.whitelist = whitelist;
