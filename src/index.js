@@ -54,10 +54,9 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
       throw new WhitelistError('src is not an array', options.path);
     }
 
-    // TODO use bluebird.reflect for parallel processing
-    const arrayOptions = _.clone(options);
-    arrayOptions.path += '[]';
-    const result = yield src.map(co.wrap(function* whitelistArray(el) {
+    const result = yield src.map(co.wrap(function* whitelistArray(el, index) {
+      const arrayOptions = _.clone(options);
+      arrayOptions.path += `[${index}]`;
       try {
         return yield whitelist(el, allowed[0], arrayOptions);
       } catch (error) {
