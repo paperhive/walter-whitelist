@@ -63,13 +63,23 @@ const whitelist = require('walter-whitelist');
 ```
 
 ## `whitelist(src, allowed, options)`
- * `src`: source object
- * `allowed`: an object that specifies which fields are allowed. The values can be
-    * a boolean: if the value is `true`, the field is allowed and *copied* to the result object
-    * an object: whitelist is called recursively (for nested objects)
-    * a function `fn(value, path)`: the result of the function is placed in the result object
+ * `src`: source object, array or primitive
+ * `allowed`: the checks on `src` are performed according to this value. The following values are accepted:
+    * an object `{key: value, ...}`:
+       * expects `src` to be an object.
+       * iterates over keys and uses the value for whitelisting the corresponding key/value pair in `src`
+       * `value` can be any value that is accepted as the `allowed` parameter
+    * an array with one element `[value]`:
+       * expects `src` to be an array
+       * iterates over elements of array `src` and whitelists according to `value`
+       * `value` can be any value that is accepted as the `allowed parameter`
+    * a function `fn(src, options)`:
+       * should return the whitelisted `src` (directly or via a promise)
+       * if `omitDisallowed` is `false` and `src` contains disallowed data, the function is responsible for throwing a `WhitelistError` (or rejecting the returned promise with a `WhitelistError`)
+    * a boolean: if the value is `true`, `src` is allowed and returned as the result
  * `options`: an object with the following optional keys:
     * `omitUndefined`: if set to `true`, it omits fields in the result whose values are undefined
-    * `omitDisallowed`: if set to `true`, it omits fields from src that are not present in `allowed`
+    * `omitDisallowed`: if set to `true`, it omits fields from src that are not present in `allowed`.
+    * `data`: custom data that is recursively passed to any function in the `allowed` parameter.
 
 The function returns a new object with the whitelisted fields and throws a `whitelist.WhitelistError` if a field in `src` is not allowed (unless `omitDisallow` is `true`).

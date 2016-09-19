@@ -43,6 +43,7 @@
     "should": "^11.1.0"
   },
   "dependencies": {
+    "co": "^4.6.0",
     "lodash": "^4.0.0"
   }
 }

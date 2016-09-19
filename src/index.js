@@ -1,3 +1,4 @@
+const co = require('co');
 const _ = require('lodash');
 const util = require('util');
 
@@ -16,9 +17,9 @@ function setDifference(a, b) {
 
 /* check if obj is valid and return object with value 'undefined' for
  * missing keys in obj */
-function whitelist(src, allowed, _options, _path) {
+const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
   // init default options
-  const options = _.defaults(_options || {}, {
+  const options = _.defaults({}, _options, {
     // ignore keys in `src` that are not whitelisted in the `allowed` obj
     // (otherwise a WhitelistError is thrown)
     omitDisallowed: false,
@@ -26,58 +27,97 @@ function whitelist(src, allowed, _options, _path) {
     // (values of keys which are in `allowed` obj but not in `src` are set to
     // undefined by default)
     omitUndefined: false,
+    // path in allowed parameter (for recursive calls)
+    path: '',
   });
 
-  // init path
-  const path = _path || '';
-
-  // check input
-  if (!_.isObject(src) || !_.isObject(allowed)) {
-    throw new WhitelistError(
-      `expected an object${(path ? ` at path ${path}` : '')}`
-    );
+  if (_.isBoolean(allowed)) {
+    if (allowed) return src;
+    if (options.omitDisallowed) return undefined;
+    throw new WhitelistError('value not allowed', options.path);
   }
 
-  // check for extra keys
-  if (!options.omitDisallowed) {
+  if (_.isFunction(allowed)) {
+    try {
+      return yield Promise.resolve(allowed(src, options));
+    } catch (error) {
+      if (options.omitDisallowed) return undefined;
+      throw error;
+    }
+  }
+
+  if (_.isArray(allowed)) {
+    if (allowed.length !== 1) {
+      throw new WhitelistError('allowed array not of length 1', options.path);
+    }
+    if (!_.isArray(src)) {
+      throw new WhitelistError('src is not an array', options.path);
+    }
+
+    // TODO use bluebird.reflect for parallel processing
+    const arrayOptions = _.clone(options);
+    arrayOptions.path += '[]';
+    const result = yield src.map(co.wrap(function* whitelistArray(el) {
+      try {
+        return yield whitelist(el, allowed[0], arrayOptions);
+      } catch (error) {
+        if (options.omitDisallowed) return undefined;
+        throw error;
+      }
+    }));
+
+    // remove undefined (not using _.compact because it removes all falsy elements)
+    if (options.omitUndefined) {
+      const cleanResult = [];
+      result.forEach((el) => {
+        if (el !== undefined) cleanResult.push(el);
+      });
+      return cleanResult;
+    }
+
+    return result;
+  }
+
+  if (_.isObject(allowed)) {
+    if (!_.isObject(src)) throw new WhitelistError('src is not an object');
+
+    // check for extra keys
     const srcKeys = new Set(Object.keys(src));
     const allowedKeys = new Set(Object.keys(allowed));
     const disallowedKeys = setDifference(srcKeys, allowedKeys);
-    if (disallowedKeys.size) {
-      throw new WhitelistError(
-        `The following fields are not allowed: ${
-          Array.from(disallowedKeys).map(key => path + key).join(', ')
-        }. Allowed fields: ${Array.from(allowedKeys).join(', ')}.`,
-        disallowedKeys
-      );
+    if (!options.omitDisallowed) {
+      if (disallowedKeys.size) {
+        throw new WhitelistError(
+          `The following fields are not allowed: ${
+            Array.from(disallowedKeys).map(key => options.path + key).join(', ')
+          }. Allowed fields: ${Array.from(allowedKeys).join(', ')}.`,
+          disallowedKeys
+        );
+      }
     }
+
+    const result = yield _.mapValues(allowed, co.wrap(function* whitelistObject(value, key) {
+      const objectOptions = _.clone(options);
+      if (!objectOptions.path) objectOptions.path = key;
+      else objectOptions.path += `.${key}`;
+      try {
+        return yield whitelist(src[key], value, objectOptions);
+      } catch (error) {
+        if (options.omitDisallowed) return undefined;
+        throw error;
+      }
+    }));
+
+    // set disallowed fields to undefined if omitDisallowed is true
+    // (useful for updating database with user-supplied data)
+    if (options.omitDisallowed) disallowedKeys.forEach((k) => { result[k] = undefined; });
+
+    // filter undefined values (if required by options)
+    return options.omitUndefined ? _.pickBy(result, v => v !== undefined) : result;
   }
 
-  // construct new object
-  const res = _.mapValues(allowed, (val, key) => {
-    const currentPath = path + key;
-
-    // falsy: undefined
-    if (!val) return undefined;
-
-    // true: use full object
-    if (val === true) return src[key];
-
-    // function: use result of function call
-    if (_.isFunction(val)) return val(src[key], currentPath);
-
-    // object: get whitelisted object recursively
-    if (_.isObject(val)) {
-      return whitelist(src[key] || {}, val, options, `${currentPath}.`);
-    }
-
-    // unhandled value
-    throw new Error(`unknown value in allowed object for key ${key}: ${val}`);
-  });
-
-  // filter undefined values (if required by options)
-  return options.omitUndefined ? _.pickBy(res, v => v !== undefined) : res;
-}
+  throw new Error('allowed parameter type not recognized');
+});
 
 module.exports = whitelist.default = whitelist.whitelist = whitelist;
 whitelist.WhitelistError = WhitelistError;
