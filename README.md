@@ -14,30 +14,33 @@ Before storing user-supplied data in a database, you usually want to check if th
 
 ```javascript
 let allowed = {name: true, age: true};
-whitelist({name: 'Darth', age: 42}, allowed); // returns {name: 'Darth', age: 42}
-whitelist({id: 23}, allowed); // throws WhitelistError (field 'id' is not allowed)
-whitelist({name: 'Darth'}, allowed); // returns {name: 'Darth', age: undefined}
+whitelist({name: 'Darth', age: 42}, allowed); // resolves with {name: 'Darth', age: 42}
+whitelist({id: 23}, allowed); // rejects with WhitelistError (field 'id' is not allowed)
+whitelist({name: 'Darth'}, allowed); // resolves with {name: 'Darth', age: undefined}
 // omit keys with undefined values:
-whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // returns {name: 'Darth'}
+whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // resolves with {name: 'Darth'}
 ```
 
 You can also use a function to check fields:
 ```javascript
 let allowed = {
   name: true,
-  age: (v) => v < 50 ? v : undefined
+  age: (age, options) => {
+    if (age < 50) return age;
+    throw WhitelistError('age must be less than 50', options.path);
+  },
 };
-whitelist({name: 'Darth', age: 42}, allowed); // returns {name: 'Darth', age: 42}
-whitelist({name: 'Darth', age: 66}, allowed); // returns {name: 'Darth', age: undefined}
+whitelist({name: 'Darth', age: 42}, allowed); // resolves with {name: 'Darth', age: 42}
+whitelist({name: 'Darth', age: 66}, allowed); // rejects with WhitelistError ('age must be less than 50')
 ```
 
 Nested objects work, too:
 ```javascript
 allowed = {name: true, lightsaber: {color: true}};
-whitelist({name: 'Darth', lightsaber: {color: 'red'}}, allowed);  // returns {name: 'Darth', lightsaber: {color: 'red'}}
-whitelist({name: 'Darth'}, allowed);  // returns {name: 'Darth', lightsaber: {color: undefined}}
+whitelist({name: 'Darth', lightsaber: {color: 'red'}}, allowed);  // resolves with {name: 'Darth', lightsaber: {color: 'red'}}
+whitelist({name: 'Darth'}, allowed);  // resolves with {name: 'Darth', lightsaber: {color: undefined}}
 // omit keys with undefined values:
-whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // returns {name: 'Darth', lightsaber: {}}
+whitelist({name: 'Darth'}, allowed, {omitUndefined: true}); // resolves with {name: 'Darth', lightsaber: {}}
 ```
 
 ## Pick allowed fields
@@ -45,11 +48,11 @@ Before sending data from a database to a client, you want to pick only fields th
 
 ```javascript
 let allowed = {name: true, age: true};
-whitelist({id: 23, name: 'Darth', age: 42}, allowed, {omitDisallowed: true}); // returns {name: 'Darth', age: 42}
-whitelist({id: 23, name: 'Darth'}, allowed, {omitDisallowed: true}); // returns {name: 'Darth', age: undefined}
+whitelist({id: 23, name: 'Darth', age: 42}, allowed, {omitDisallowed: true}); // resolves with {name: 'Darth', age: 42}
+whitelist({id: 23, name: 'Darth'}, allowed, {omitDisallowed: true}); // resolves with {name: 'Darth', age: undefined}
 // omitDisallowed can be combined with omitUndefined:
 whitelist({id: 23, name: 'Darth'}, allowed,
-  {omitDisallowed: true, omitUndefined: true}); // returns {name: 'Darth'}
+  {omitDisallowed: true, omitUndefined: true}); // resolves with {name: 'Darth'}
 ```
 
 # Installation
