@@ -4,7 +4,8 @@
   "description": "Whitelist javascript objects",
   "main": "src/index.js",
   "scripts": {
-    "coveralls": "nyc --reporter=lcov npm test && cat coverage/lcov.info | coveralls",
+    "cover": "nyc --reporter=lcov npm test",
+    "codecov": "npm run cover && codecov",
     "lint": "eslint src test",
     "test": "mocha test"
   },
@@ -34,7 +35,7 @@
   },
   "homepage": "https://github.com/paperhive/walter-whitelist#readme",
   "devDependencies": {
-    "coveralls": "^2.11.13",
+    "codecov": "^1.0.1",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^11.0.0",
     "eslint-plugin-import": "^1.15.0",
