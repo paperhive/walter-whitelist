@@ -1,4 +1,4 @@
-# walter-whitelist [![Build Status](https://travis-ci.org/paperhive/walter-whitelist.svg?branch=master)](https://travis-ci.org/paperhive/walter-whitelist) [![Coverage Status](https://coveralls.io/repos/paperhive/walter-whitelist/badge.svg?branch=master&service=github)](https://coveralls.io/github/paperhive/walter-whitelist?branch=master)
+# walter-whitelist [![Build Status](https://travis-ci.org/paperhive/walter-whitelist.svg?branch=master)](https://travis-ci.org/paperhive/walter-whitelist) [![codecov](https://codecov.io/gh/paperhive/walter-whitelist/branch/master/graph/badge.svg)](https://codecov.io/gh/paperhive/walter-whitelist)
 
 This lightweight module whitelists javascript objects recursively. This is particularly useful in the following situations:
 
