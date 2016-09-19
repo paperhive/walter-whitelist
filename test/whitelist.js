@@ -122,7 +122,7 @@ describe('whitelist()', () => {
 
     it('should throw if src has additional keys', co.wrap(function* () {
       yield whitelist({name: 'Darth', age: 5}, {name: true})
-        .should.be.rejectedWith(/The following fields are not allowed: age/);
+        .should.be.rejectedWith(/The following field is not allowed: age/);
     }));
 
     it('should throw if src contains disallowed data', co.wrap(function* () {
@@ -147,7 +147,7 @@ describe('whitelist()', () => {
   });
 
   describe('allowed is nested combination', () => {
-    describe('complex object #1', () => {
+    describe('complex object', () => {
       const group = {
         name: 'Jedi',
         members: [{name: 'Luke', age: 25}, {name: 'Darth', age: 50}],
@@ -185,6 +185,23 @@ describe('whitelist()', () => {
       it('should return whitelisted object', co.wrap(function* () {
         (yield whitelist(group, {name: true, members: [{name: true, age: true}]}))
           .should.eql(group);
+      }));
+    });
+
+    describe('complex array', () => {
+      const posts = [
+        {name: 'Schrödinger equations', private: false, authors: ['luke', 'darth']},
+        {name: 'Krylov subspaces', private: true, authors: ['darth']},
+      ];
+
+      it('should throw if contains disallowed data', co.wrap(function* () {
+        yield whitelist(
+          posts,
+          [{name: true, private: true}]
+        ).should.be.rejectedWith({
+          message: /The following field is not allowed: \[0\]\.authors/,
+          path: '[0].authors',
+        });
       }));
     });
   });
