@@ -60,7 +60,7 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
       try {
         return yield whitelist(el, allowed[0], arrayOptions);
       } catch (error) {
-        if (options.omitDisallowed) return undefined;
+        if (error instanceof WhitelistError && options.omitDisallowed) return undefined;
         throw error;
       }
     }));
@@ -102,7 +102,7 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
       try {
         return yield whitelist(src[key], value, objectOptions);
       } catch (error) {
-        if (options.omitDisallowed) return undefined;
+        if (error instanceof WhitelistError && options.omitDisallowed) return undefined;
         throw error;
       }
     }));

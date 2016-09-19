@@ -203,6 +203,28 @@ describe('whitelist()', () => {
           path: '[0].authors',
         });
       }));
+
+      it('should return whitelisted object with custom data', co.wrap(function* () {
+        const allowed = [(post, options) => {
+          // allow public posts and private posts where the user is an author
+          const isAuthor = options.data && post.authors.indexOf(options.data.user) !== -1;
+          return whitelist(
+            post,
+            (!post.private || isAuthor) && {name: true, authors: [true]},
+            options
+          );
+        }];
+
+        (yield whitelist(posts, allowed, {omitDisallowed: true, omitUndefined: true}))
+          .should.eql([{name: 'Schrödinger equations', authors: ['luke', 'darth']}]);
+        (yield whitelist(posts, allowed, {omitDisallowed: true, omitUndefined: true, data: {user: 'luke'}}))
+          .should.eql([{name: 'Schrödinger equations', authors: ['luke', 'darth']}]);
+        (yield whitelist(posts, allowed, {omitDisallowed: true, omitUndefined: true, data: {user: 'darth'}}))
+          .should.eql([
+            {name: 'Schrödinger equations', authors: ['luke', 'darth']},
+            {name: 'Krylov subspaces', authors: ['darth']},
+          ]);
+      }));
     });
   });
 });
