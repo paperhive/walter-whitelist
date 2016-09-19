@@ -1,10 +1,11 @@
 {
   "name": "walter-whitelist",
-  "version": "1.0.14",
+  "version": "2.0.0-alpha.1",
   "description": "Whitelist javascript objects",
   "main": "src/index.js",
   "scripts": {
-    "coveralls": "isparta cover ./node_modules/mocha/bin/_mocha test && cat coverage/lcov.info | coveralls",
+    "cover": "nyc --reporter=lcov npm test",
+    "codecov": "npm run cover && codecov",
     "lint": "eslint src test",
     "test": "mocha test"
   },
@@ -34,15 +35,16 @@
   },
   "homepage": "https://github.com/paperhive/walter-whitelist#readme",
   "devDependencies": {
-    "coveralls": "^2.11.13",
+    "codecov": "^1.0.1",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^11.0.0",
     "eslint-plugin-import": "^1.15.0",
-    "isparta": "^4.0.0",
     "mocha": "^3.0.2",
+    "nyc": "^8.3.0",
     "should": "^11.1.0"
   },
   "dependencies": {
+    "co": "^4.6.0",
     "lodash": "^4.0.0"
   }
 }
