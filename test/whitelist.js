@@ -4,6 +4,8 @@ const should = require('should');
 
 const whitelist = require('..');
 
+const sleep = t => new Promise(resolve => setTimeout(resolve, t));
+
 /*
 const darth = {
   // primitives
@@ -224,6 +226,26 @@ describe('whitelist()', () => {
             {name: 'Schrödinger equations', authors: ['luke', 'darth']},
             {name: 'Krylov subspaces', authors: ['darth']},
           ]);
+      }));
+    });
+
+    describe('async', () => {
+      const allowed = [{
+        name: (name, options) => sleep(10).then(() => (name === 'darth' ?
+          Promise.reject(new whitelist.WhitelistError('darth is not allowed', options.path)) :
+          Promise.resolve(name)
+        )),
+      }];
+
+      it('should throw if the promise rejects', co.wrap(function* () {
+        yield whitelist([{name: 'darth'}], allowed).should.be.rejectedWith({
+          message: 'darth is not allowed',
+          path: '[0].name',
+        });
+      }));
+
+      it('should return whitelisted object if the promise resolves', co.wrap(function* () {
+        (yield whitelist([{name: 'luke'}], allowed)).should.eql([{name: 'luke'}]);
       }));
     });
   });
