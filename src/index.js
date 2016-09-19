@@ -83,14 +83,14 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
     // check for extra keys
     const srcKeys = new Set(Object.keys(src));
     const allowedKeys = new Set(Object.keys(allowed));
-    const disallowedKeys = setDifference(srcKeys, allowedKeys);
+    const disallowedKeys = Array.from(setDifference(srcKeys, allowedKeys));
     if (!options.omitDisallowed) {
-      if (disallowedKeys.size) {
+      if (disallowedKeys.length > 0) {
+        const key = disallowedKeys[0];
+        const path = options.path ? `${options.path}.${key}` : key;
         throw new WhitelistError(
-          `The following fields are not allowed: ${
-            Array.from(disallowedKeys).map(key => options.path + key).join(', ')
-          }. Allowed fields: ${Array.from(allowedKeys).join(', ')}.`,
-          disallowedKeys
+          `The following field is not allowed: ${path}. Allowed fields at ${options.path}: ${Array.from(allowedKeys).join(', ')}.`,
+          path
         );
       }
     }
