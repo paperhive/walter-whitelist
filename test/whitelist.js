@@ -248,5 +248,44 @@ describe('whitelist()', () => {
         (yield whitelist([{name: 'luke'}], allowed)).should.eql([{name: 'luke'}]);
       }));
     });
+
+    describe('database models', () => {
+      const darth = {name: 'darth', settings: {rememberLogin: true}};
+      const luke = {name: 'luke', settings: {rememberLogin: false}};
+      const userAllowed = (user, options) => whitelist(user, {
+        name: true,
+        settings: options.data.user && options.data.user === user.name && {
+          rememberLogin: true,
+        },
+      }, options);
+
+      // reference user in group
+      const group = {
+        name: 'jedis',
+        members: [
+          {user: darth, roles: ['admin']},
+          {user: luke, roles: ['apprentice']},
+        ],
+      };
+      const groupAllowed = {
+        name: true,
+        members: [{user: userAllowed, roles: [true]}],
+      };
+
+      it('should return whitelisted referenced object', co.wrap(function* () {
+        (yield whitelist(
+          group,
+          groupAllowed,
+          {omitDisallowed: true, omitUndefined: true, data: {user: 'darth'}}
+        ))
+          .should.eql({
+            name: 'jedis',
+            members: [
+              {user: darth, roles: ['admin']},
+              {user: {name: 'luke'}, roles: ['apprentice']},
+            ],
+          });
+      }));
+    });
   });
 });
