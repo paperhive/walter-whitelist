@@ -1,4 +1,5 @@
 const co = require('co');
+const _ = require('lodash');
 const should = require('should');
 
 const whitelist = require('..');
@@ -146,11 +147,45 @@ describe('whitelist()', () => {
   });
 
   describe('allowed is nested combination', () => {
-    it('should throw if nested fails', co.wrap(function* () {
-      yield whitelist(
-        {members: [{name: 'Darth', age: 50}]},
-        {members: [{name: true, age: allowBelowFifty}]}
-      ).should.be.rejectedWith({message: 'number must be below 50', path: 'members[].age'});
-    }));
+    describe('complex object #1', () => {
+      const group = {
+        name: 'Jedi',
+        members: [{name: 'Luke', age: 25}, {name: 'Darth', age: 50}],
+      };
+
+      it('should throw if nested fails', co.wrap(function* () {
+        yield whitelist(
+          group,
+          {name: true, members: [{name: true, age: allowBelowFifty}]}
+        ).should.be.rejectedWith({message: 'number must be below 50', path: 'members[1].age'});
+      }));
+
+      it('should return partial whitelisted object with omitDisallowed', co.wrap(function* () {
+        const whitelistedGroup = _.cloneDeep(group);
+        whitelistedGroup.name = undefined;
+        whitelistedGroup.members[1].age = undefined;
+        (yield whitelist(
+          group,
+          {members: [{name: true, age: allowBelowFifty}]},
+          {omitDisallowed: true}
+        )).should.eql(whitelistedGroup);
+      }));
+
+      it('should return partial whitelisted object with omitDisallowed and omitUndefined', co.wrap(function* () {
+        const whitelistedGroup = _.cloneDeep(group);
+        delete whitelistedGroup.name;
+        delete whitelistedGroup.members[1].age;
+        (yield whitelist(
+          group,
+          {members: [{name: true, age: allowBelowFifty}]},
+          {omitDisallowed: true, omitUndefined: true}
+        )).should.eql(whitelistedGroup);
+      }));
+
+      it('should return whitelisted object', co.wrap(function* () {
+        (yield whitelist(group, {name: true, members: [{name: true, age: true}]}))
+          .should.eql(group);
+      }));
+    });
   });
 });
