@@ -31,7 +31,7 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
     path: '',
   });
 
-  if (_.isBoolean(allowed)) {
+  if (_.isBoolean(allowed) || allowed === undefined) {
     if (allowed) return src;
     if (options.omitDisallowed) return undefined;
     throw new WhitelistError('value not allowed', options.path);

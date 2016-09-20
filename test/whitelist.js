@@ -7,6 +7,12 @@ const whitelist = require('..');
 const sleep = t => new Promise(resolve => setTimeout(resolve, t));
 
 describe('whitelist()', () => {
+  describe('allowed is undefined', () => {
+    it('should throw', co.wrap(function* () {
+      yield whitelist(42, undefined).should.be.rejectedWith('value not allowed');
+    }));
+  });
+
   describe('allowed is boolean', () => {
     it('should throw if allowed is false', co.wrap(function* () {
       yield whitelist(42, false).should.be.rejectedWith('value not allowed');
