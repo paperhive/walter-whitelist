@@ -6,50 +6,19 @@ const whitelist = require('..');
 
 const sleep = t => new Promise(resolve => setTimeout(resolve, t));
 
-/*
-const darth = {
-  // primitives
-  name: 'Darth',
-  // array of primitives
-  alternativeNames: ['Anakin', 'Lord Vader'],
-  // nested object
-  settings: {color: 'red', remember: true},
-  // array with objects
-  skills: [{name: 'lightsaber', level: 1}, {name: 'math', level: -1}],
-};
-
-const personAllowedRead = (person, options) => {
-  const isSelf = options.data && options.data.authenticated === person.name;
-  return whitelist(person, {
-    name: true,
-    alternativeNames: [true],
-    settings: isSelf && {color: true, remember: true},
-    skills: [{name: true, level: isSelf}],
-  }, options);
-};
-
-const personAllowedWrite = (person, options) => {
-  return whitelist(person, isSelf && {
-    name: true,
-    alternativeNames: true,
-    settings: {color: true, remember: true},
-  });
-};
-
-const deathstar = {
-  name: 'Death star',
-  progress: 0.8,
-  owner: darth,
-};
-
-const placeAllowedRead = {
-  name: true,
-  progress: true,
-  owner: personAllowedRead,
-};
-*/
-
 describe('whitelist()', () => {
+  describe('allowed is not recognized', () => {
+    it('should throw', co.wrap(function* () {
+      yield whitelist(42, 42).should.be.rejectedWith('allowed parameter type not recognized');
+    }));
+  });
+
+  describe('allowed is undefined', () => {
+    it('should throw', co.wrap(function* () {
+      yield whitelist(42, undefined).should.be.rejectedWith('value not allowed');
+    }));
+  });
+
   describe('allowed is boolean', () => {
     it('should throw if allowed is false', co.wrap(function* () {
       yield whitelist(42, false).should.be.rejectedWith('value not allowed');
