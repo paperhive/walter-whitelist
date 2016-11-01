@@ -170,7 +170,7 @@ describe('whitelist()', () => {
           posts,
           [{name: true, private: true}]
         ).should.be.rejectedWith({
-          message: /The following field is not allowed: \[0\]\.authors/,
+          message: /The following field is not allowed: \[0]\.authors/, //
           path: '[0].authors',
         });
       }));
