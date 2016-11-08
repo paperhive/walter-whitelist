@@ -3,6 +3,13 @@
   "rules": {
     "no-cond-assign": [2, "except-parens"],
     "object-curly-spacing": 0,
-    "strict": [2, "global"]
+    "strict": [2, "global"],
+    "comma-dangle": ["error", {
+      "arrays": "only-multiline",
+      "objects": "only-multiline",
+      "imports": "never",
+      "exports": "never",
+      "functions": "never"
+    }]
   }
 }
