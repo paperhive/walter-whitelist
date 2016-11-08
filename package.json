@@ -38,7 +38,7 @@
     "codecov": "^1.0.1",
     "eslint": "^3.5.0",
     "eslint-config-airbnb": "^13.0.0",
-    "eslint-plugin-import": "^2.0.0",
+    "eslint-plugin-import": "^2.2.0",
     "mocha": "^3.0.2",
     "nyc": "^8.3.0",
     "should": "^11.1.0"
