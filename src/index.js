@@ -118,5 +118,7 @@ const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
   throw new Error('allowed parameter type not recognized');
 });
 
-module.exports = whitelist.default = whitelist.whitelist = whitelist;
+module.exports = whitelist;
+whitelist.default = whitelist;
+whitelist.whitelist = whitelist;
 whitelist.WhitelistError = WhitelistError;
