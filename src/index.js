@@ -17,7 +17,7 @@ function setDifference(a, b) {
 
 /* check if obj is valid and return object with value 'undefined' for
  * missing keys in obj */
-const whitelist = co.wrap(function* whitelist(src, allowed, _options) {
+const whitelist = co.wrap(function* whitelistWrapped(src, allowed, _options) {
   // init default options
   const options = _.defaults({}, _options, {
     // ignore keys in `src` that are not whitelisted in the `allowed` obj
