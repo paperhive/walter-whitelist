@@ -1,5 +1,7 @@
 # walter-whitelist [![Build Status](https://travis-ci.org/paperhive/walter-whitelist.svg?branch=master)](https://travis-ci.org/paperhive/walter-whitelist) [![codecov](https://codecov.io/gh/paperhive/walter-whitelist/branch/master/graph/badge.svg)](https://codecov.io/gh/paperhive/walter-whitelist)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/paperhive/walter-whitelist.svg)](https://greenkeeper.io/)
+
 This lightweight module whitelists javascript objects recursively. This is particularly useful in the following situations:
 
  * you have to check that a user-supplied object only contains keys that the user is allowed to supply, e.g., when handling a POST/PUT request
