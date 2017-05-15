@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "co": "^4.6.0",
-    "lodash": "^4.0.0"
+    "lodash": "^4.16.6"
   }
 }
