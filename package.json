@@ -39,7 +39,7 @@
     "eslint": "^4.1.0",
     "eslint-config-airbnb": "^15.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "mocha": "^3.0.2",
+    "mocha": "^4.0.0",
     "nyc": "^11.0.2",
     "should": "^13.0.0"
   },
