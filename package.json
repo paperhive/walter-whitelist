@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/paperhive/walter-whitelist#readme",
   "devDependencies": {
-    "codecov": "^2.1.0",
+    "codecov": "^3.0.0",
     "eslint": "^4.1.0",
     "eslint-config-airbnb": "^16.0.0",
     "eslint-plugin-import": "^2.2.0",
